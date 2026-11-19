@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B2A6F">
+<title>Qual curso combina com você? · Senac Tefé</title>
+<style>
+/* ===== Quiz Senac Tefé · estilos (mobile-first) ===== */
+:root{
+  --azul:#0B2A6F; --royal:#1C4FD8; --laranja:#FF8A00; --amarelo:#FFC21A;
+  --ceu:#E8F0FD; --tinta:#10203F; --branco:#fff; --r:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;
+  background:var(--ceu);color:var(--tinta);line-height:1.45;
+  min-height:100dvh;overflow-x:hidden;
+}
+.app{max-width:520px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column}
+main{flex:1;padding:0 16px 20px}
+button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--amarelo);outline-offset:2px}
+
+/* Topo */
+.top{
+  background:var(--azul);color:#fff;display:flex;align-items:center;justify-content:space-between;
+  padding:calc(12px + env(safe-area-inset-top,0px)) 18px 12px;
+}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{font-size:1.9rem;font-weight:800;letter-spacing:-1px}
+.sep{width:1px;height:28px;background:rgba(255,255,255,.4)}
+.sub{font-size:.8rem;line-height:1.1;font-weight:700}
+.anos{
+  width:46px;height:46px;border-radius:50%;background:var(--amarelo);color:var(--azul);
+  display:grid;place-content:center;text-align:center;font-weight:800;font-size:1.15rem;line-height:.9;
+}
+.anos small{font-size:.5rem;font-weight:700}
+
+/* Telas */
+.screen{display:none}
+.screen.active{display:block;animation:entra .35s ease both}
+@keyframes entra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Hero */
+.hero{
+  background:linear-gradient(160deg,var(--azul),var(--royal));color:#fff;
+  margin:0 -16px;padding:28px 22px 30px;border-radius:0 0 28px 28px;
+}
+.polo{display:inline-block;background:var(--laranja);color:#fff;font-weight:700;font-size:.85rem;padding:4px 12px;border-radius:99px;margin-bottom:14px}
+.hero h1{font-size:clamp(1.7rem,8vw,2.2rem);line-height:1.1;font-weight:800;letter-spacing:-.5px}
+.traco{width:min(260px,70%);margin:8px 0 12px;display:block}
+.lead{font-size:1.02rem;margin-bottom:20px;color:#DDE8FF;max-width:34ch}
+.mini{font-size:.82rem;color:#5C6B8A;margin-top:10px}
+.hero .mini{color:#BFD0F5}
+
+/* Botões */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:12px 22px;
+  border:0;border-radius:14px;background:var(--laranja);color:#fff;font-weight:800;font-size:1rem;
+  box-shadow:0 4px 0 #C96A00;
+}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #C96A00}
+.btn.grande{width:100%;min-height:58px;font-size:1.15rem}
+.btn.sec{background:var(--royal);box-shadow:0 4px 0 #123BA3}
+.btn.perigo{background:#C0322B;box-shadow:0 4px 0 #8E221D}
+
+/* Cartões */
+.cartao{background:var(--branco);border-radius:var(--r);padding:18px;margin-top:16px;box-shadow:0 6px 18px rgba(11,42,111,.1)}
+.cartao h2{font-size:1.1rem;color:var(--azul);margin-bottom:10px}
+.duas{display:grid;gap:10px}
+.duas div{border-left:5px solid var(--laranja);padding-left:12px}
+.duas b{display:block;color:var(--royal)}
+.duas span{font-size:.92rem}
+
+/* Progresso */
+.prog{padding-top:18px}
+.prog-bar{height:10px;background:#C9D8F6;border-radius:99px;overflow:hidden}
+.prog-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--laranja),var(--amarelo));border-radius:99px;transition:width .35s ease}
+#progTxt{display:block;margin-top:6px;font-size:.85rem;font-weight:700;color:var(--azul)}
+
+/* Pergunta */
+.pergunta h2{font-size:1.3rem;line-height:1.25;margin-bottom:16px}
+.pergunta.troca{animation:entra .3s ease both}
+.opcoes{display:grid;gap:10px}
+.op{
+  display:flex;align-items:center;gap:12px;width:100%;min-height:62px;padding:10px 14px;text-align:left;
+  background:#F4F8FF;border:2px solid #D3E0F8;border-radius:14px;color:var(--tinta);font-size:1.02rem;font-weight:600;
+  transition:border-color .15s,background .15s,transform .15s;
+}
+.op .ico{flex:0 0 40px;width:40px;height:40px;border-radius:12px;display:grid;place-content:center;color:#fff}
+.op .ico svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.op.sel{border-color:var(--laranja);background:#FFF3E0;transform:scale(1.02)}
+
+/* Resultado */
+.res-topo{background:linear-gradient(160deg,var(--azul),var(--royal));color:#fff;margin:0 -16px;padding:24px 22px;border-radius:0 0 28px 28px;text-align:center}
+.res-topo .ico-g{width:76px;height:76px;margin:0 auto 10px;border-radius:50%;display:grid;place-content:center;color:#fff;border:4px solid #fff}
+.res-topo .ico-g svg{width:42px;height:42px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.res-topo p{color:#DDE8FF;font-size:.95rem}
+.res-topo h2{font-size:1.7rem;line-height:1.1;margin-top:2px}
+.rec{border-left:6px solid var(--laranja)}
+.rec small{display:block;font-weight:700;color:var(--royal);font-size:.8rem}
+.rec h3{font-size:1.25rem;color:var(--azul);margin:2px 0 6px}
+.rec ul{margin:6px 0 0 18px;font-size:.95rem}
+.rec.ead{border-left-color:var(--royal)}
+.rec a{color:var(--royal);font-weight:700}
+.porque em{font-style:normal;font-weight:700;color:var(--azul)}
+.res-acoes{display:grid;gap:10px;margin-top:16px}
+
+/* Rodapé */
+.rodape{background:var(--azul);color:#DDE8FF;padding:16px 18px calc(16px + env(safe-area-inset-bottom,0px));font-size:.82rem;text-align:center}
+.rodape a{color:var(--amarelo)}
+.link{background:none;border:0;color:#8FA6D9;margin-top:8px;font-size:.75rem;padding:8px}
+
+/* ADM */
+.modal{position:fixed;inset:0;background:rgba(7,20,56,.7);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.modal[hidden]{display:none}
+.modal-card{background:#fff;width:100%;max-width:520px;max-height:92dvh;overflow-y:auto;border-radius:22px 22px 0 0;padding:22px 18px calc(22px + env(safe-area-inset-bottom,0px));position:relative}
+.modal-card h2{color:var(--azul);margin-bottom:10px}
+.modal-card h3{margin:16px 0 6px;font-size:1rem;color:var(--royal)}
+.fechar{position:absolute;top:8px;right:12px;background:none;border:0;font-size:2rem;color:var(--azul);width:44px;height:44px}
+.modal label{display:block;font-weight:700;margin-bottom:4px}
+.modal input{width:100%;font-size:1rem;padding:12px;border:2px solid #C9D8F6;border-radius:12px;margin-bottom:10px}
+.erro{color:#C0322B;font-weight:700;margin-bottom:8px}
+.total{display:flex;align-items:baseline;gap:10px;margin:8px 0}
+.total b{font-size:2.6rem;color:var(--laranja);line-height:1}
+.check{font-size:.8rem;padding:6px 10px;border-radius:10px;background:#E6F6EC;color:#14602F;margin-bottom:4px}
+.check.ruim{background:#FDE7E5;color:#8E221D}
+.rank .linha{margin:6px 0}
+.rank .nome{display:flex;justify-content:space-between;font-size:.9rem;gap:8px}
+.rank .fundo{height:9px;background:#E3ECFB;border-radius:99px;overflow:hidden;margin-top:2px}
+.rank .fundo i{display:block;height:100%;background:var(--royal);border-radius:99px}
+.rank .vazio{font-size:.88rem;color:#5C6B8A}
+.acoes{display:grid;gap:10px;margin-top:18px}
+details{margin-top:16px}
+summary{font-weight:700;color:var(--royal);min-height:40px;display:flex;align-items:center}
+code{background:#EEF3FD;padding:1px 4px;border-radius:5px;font-size:.85em}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <div class="brand" aria-label="Senac Fecomércio Sesc">
+      <span class="logo">Senac</span><span class="sep"></span>
+      <span class="sub">Fecomércio<br>Sesc</span>
+    </div>
+    <span class="anos" aria-label="80 anos">80<small>anos</small></span>
+  </header>
+
+  <main>
+    <!-- INÍCIO -->
+    <section id="home" class="screen active">
+      <div class="hero">
+        <p class="polo">Polo Senac · Tefé</p>
+        <h1>Aprender hoje.<br>Construir um amanhã melhor.</h1>
+        <svg class="traco" viewBox="0 0 300 14" aria-hidden="true"><path d="M3 9c60-8 150-9 294-3" fill="none" stroke="#FFC21A" stroke-width="6" stroke-linecap="round"/></svg>
+        <p class="lead">Responda 8 perguntas rápidas sobre o que você sente e escolhe. Não existe resposta certa.</p>
+        <button id="btnIniciar" class="btn grande">Começar agora</button>
+        <p class="mini">Cerca de 2 minutos</p>
+      </div>
+      <div class="cartao">
+        <h2>Você descobre</h2>
+        <div class="duas">
+          <div><b>Presencial</b><span>Gastronomia, Área da Beleza, Administração ou Saúde</span></div>
+          <div><b>Senac EAD</b><span>Estude no seu ritmo, sem sair de casa: Livre, Técnico, Graduação ou Pós</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PERGUNTAS -->
+    <section id="quiz" class="screen" aria-live="polite">
+      <div class="prog"><div class="prog-bar"><i id="barra"></i></div><span id="progTxt">Pergunta 1 de 8</span></div>
+      <div id="cartaoPergunta" class="cartao pergunta">
+        <h2 id="pTexto"></h2>
+        <div id="opcoes" class="opcoes"></div>
+      </div>
+    </section>
+
+    <!-- RESULTADO -->
+    <section id="result" class="screen"></section>
+  </main>
+
+  <footer class="rodape">
+    <p><b>Senac Tefé</b> · Rua Bom Jesus, 1037, Jerusalém – Tefé/AM</p>
+    <p><a href="https://wa.me/5592981975354" target="_blank" rel="noopener">WhatsApp (92) 98197-5354</a> · <a href="https://www.ead.senac.br" target="_blank" rel="noopener">ead.senac.br</a></p>
+    <button id="btnAdm" class="link" type="button">ADM</button>
+  </footer>
+</div>
+
+<!-- PAINEL ADM -->
+<div id="adm" class="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-label="Painel ADM">
+    <button id="admFechar" class="fechar" aria-label="Fechar">×</button>
+
+    <div id="admLogin">
+      <h2>Área do ADM</h2>
+      <label for="admSenha">Senha</label>
+      <input id="admSenha" type="password" autocomplete="off">
+      <p id="admErro" class="erro" hidden>Senha incorreta.</p>
+      <button id="admEntrar" class="btn">Entrar</button>
+      <p class="mini">Aviso: em site estático a senha fica no código (script.js) e não protege dados sensíveis. Serve apenas para evitar acesso casual.</p>
+    </div>
+
+    <div id="admPainel" hidden>
+      <h2>Painel ADM</h2>
+      <p id="admFonte" class="mini"></p>
+      <div class="total"><b id="admTotal">0</b><span>pessoas responderam</span></div>
+      <div id="admCheck" class="check"></div>
+      <h3>Cursos presenciais recomendados</h3><div id="admPres" class="rank"></div>
+      <h3>Cursos EAD recomendados</h3><div id="admEad" class="rank"></div>
+      <h3>Ranking geral</h3><div id="admGeral" class="rank"></div>
+      <div class="acoes">
+        <button id="admCopiar" class="btn">Copiar resumo</button>
+        <button id="admCentral" class="btn sec" hidden>Ver dados centrais</button>
+        <button id="admLocal" class="btn sec" hidden>Ver este aparelho</button>
+        <button id="admReenviar" class="btn sec" hidden>Reenviar pendentes</button>
+        <button id="admReset" class="btn perigo">Resetar dados deste aparelho</button>
+      </div>
+      <details>
+        <summary>Como juntar os dados de vários celulares</summary>
+        <p class="mini"><b>Importante:</b> o <code>localStorage</code> guarda os dados só no aparelho onde o quiz foi aberto. Cada celular que escaneia o QR Code tem a sua própria contagem; eles <b>não</b> se somam sozinhos.</p>
+        <p class="mini">Para centralizar, preencha <code>CONFIG.SYNC</code> no <code>script.js</code> com <b>Firebase Realtime Database</b> (URL do banco) ou <b>Supabase</b> (URL, chave anon e tabela <code>respostas</code> com as colunas <code>p</code> texto, <code>e</code> texto e <code>ts</code> bigint). Os passos detalhados estão nos comentários do arquivo.</p>
+      </details>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   Quiz de Orientação Vocacional e Sensorial · Senac Fecomércio Sesc · Polo Tefé
+   Arquivos no repositório: index.html, styles.css, script.js (mesma pasta).
+
+   CONFIGURAÇÃO (edite só este bloco)
+   ---------------------------------------------------------------------
+   ADM_SENHA: senha do painel. Em site estático ela fica visível no código
+              (quem abrir o script.js consegue ler). Não use senhas pessoais.
+
+   SYNC (opcional): sem ele, os dados ficam no localStorage, ou seja, SOMENTE
+   no navegador/aparelho onde o quiz foi respondido. Celulares diferentes
+   NÃO se somam sozinhos. Para juntar tudo, escolha UM serviço:
+
+   A) FIREBASE Realtime Database
+      1. console.firebase.google.com > criar projeto > Realtime Database.
+      2. Regras (modo de teste, para o evento):
+         { "rules": { "respostas": { ".read": true, ".write": true } } }
+         (qualquer pessoa com a URL consegue ler e gravar; use só no evento.)
+      3. provider:"firebase" e firebaseUrl:"https://SEU-PROJETO-default-rtdb.firebaseio.com"
+
+   B) SUPABASE
+      1. supabase.com > novo projeto > SQL Editor:
+         create table respostas (id bigint generated always as identity primary key,
+           p text, e text, ts bigint);
+         alter table respostas enable row level security;
+         create policy "ins" on respostas for insert to anon with check (true);
+         create policy "sel" on respostas for select to anon using (true);
+      2. provider:"supabase", supabaseUrl:"https://xxxx.supabase.co",
+         supabaseKey:"chave anon public" (Settings > API).
+   ===================================================================== */
+const CONFIG = {
+  ADM_SENHA: "senac2026",
+  STORAGE_KEY: "senacTefeQuiz.v1",
+  SYNC: { provider: "none", firebaseUrl: "", supabaseUrl: "", supabaseKey: "", supabaseTable: "respostas" }
+};
+
+/* ---------- Ícones SVG (inline, sem links externos), um por arquétipo ---------- */
+const ICONES = {
+  G: '<svg viewBox="0 0 24 24"><path d="M7 14v5h10v-5"/><path d="M6.5 14A3.5 3.5 0 0 1 7.6 7.2a4 4 0 0 1 7.8-.1A3.5 3.5 0 0 1 17.5 14z"/></svg>',
+  B: '<svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>',
+  A: '<svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M6 20v-7"/><path d="M11 20V6"/><path d="M16 20v-10"/><path d="M19 7l-3 3"/></svg>',
+  S: '<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.4-7 10-7 10z"/></svg>'
+};
+
+/* ---------- Os 4 arquétipos = 4 áreas presenciais ---------- */
+const AREAS = {
+  G: { nome: "Gastronomia", cor: "#FF8A00", ead: "Gastronomia e Alimentação",
+       trilhas: ["Cozinha básica e boas práticas", "Panificação e confeitaria", "Atendimento em alimentos e bebidas"],
+       texto: "Você respondeu com o paladar, o calor e o cheiro das coisas. Quem se encontra na cozinha transforma ingredientes em encontro, memória e conquista." },
+  B: { nome: "Área da Beleza", cor: "#E0457B", ead: "Estética e Beleza",
+       trilhas: ["Cabeleireiro e coloração", "Manicure e pedicure", "Maquiagem e design de sobrancelhas"],
+       texto: "Suas escolhas giram em torno de cor, brilho, estilo e transformação. Quem tem esse olhar faz as pessoas se verem melhor e ganharem confiança." },
+  A: { nome: "Administração", cor: "#1C4FD8", ead: "Gestão e Negócios",
+       trilhas: ["Assistente administrativo", "Técnicas de operação de caixa", "A arte de se comunicar e de vender mais"],
+       texto: "Você buscou ordem, plano e direção. Quem se sente bem organizando pessoas e processos faz as ideias saírem do papel e as equipes funcionarem." },
+  S: { nome: "Saúde", cor: "#12A594", ead: "Saúde e Bem-estar",
+       trilhas: ["Cuidador de pessoas idosas", "Primeiros socorros", "Auxiliar em serviços de saúde"],
+       texto: "Suas respostas falam de calma, escuta e cuidado. Quem se move pelo acolhimento faz diferença real na vida de quem precisa." }
+};
+const ORDEM = ["G", "B", "A", "S"];
+
+/* ---------- Banco de 80 perguntas. Formato: "pergunta|G|B|A|S" (cada opção ligada a um arquétipo) ---------- */
+const RAW = [
+"Que cheiro te traz mais alegria?|Pão quentinho|Perfume favorito|Caderno novo|Chá de ervas",
+"Que textura você mais gosta de tocar?|Massa macia|Seda e cetim|Papel firme|Mão amiga",
+"Qual som combina com o seu melhor dia?|Panela chiando|Música no salão|Teclas digitando|Silêncio que acalma",
+"Num fim de semana livre, você prefere...|Cozinhar para todos|Se produzir todo|Organizar a casa|Cuidar de alguém",
+"Qual cor chama mais a sua atenção?|Vermelho pimentão|Rosa brilhante|Azul confiança|Verde cura",
+"Qual é o seu lugar favorito?|A cozinha|Diante do espelho|Escritório arrumado|Jardim tranquilo",
+"Que sensação de conquista é a melhor?|Prato elogiado|Alguém se sentindo lindo|Meta batida|Alguém aliviado",
+"Num grupo, você costuma ser quem...|Faz a comida|Dá o toque de estilo|Combina tudo|Escuta os problemas",
+"Qual ritmo é o seu?|Fogo alto e rápido|Ritmo de festa|Passo firme e planejado|Calmo e atento",
+"Quando está estressado(a), você...|Cozinha algo|Muda o visual|Faz uma lista|Respira fundo",
+"Que presente você gosta de dar?|Cesta de delícias|Kit de beleza|Agenda personalizada|Chá e bem-estar",
+"Qual seria o seu superpoder?|Sabor perfeito|Transformar o visual|Organizar o caos|Curar com um toque",
+"Que vitrine faz você parar?|Doceria|Salão de beleza|Papelaria|Loja de bem-estar",
+"Que cena de filme você mais curte?|Chef inspirado|Transformação de visual|Reunião de decisões|Equipe de resgate",
+"Qual tarefa te dá prazer?|Temperar|Pentear e maquiar|Deixar a planilha em ordem|Acolher alguém",
+"O que mais te atrai num mercado?|Hortifrúti|Corredor de cosméticos|Caixas organizados|Corredor de vitaminas",
+"Qual elemento é a sua cara?|Fogo|Brilho|Terra firme|Água calma",
+"Numa festa, você...|Cuida do cardápio|Cuida do visual|Cuida da logística|Cuida de quem precisa",
+"Que ambiente te inspira?|Cozinha movimentada|Salão iluminado|Sala de reuniões|Sala clara e silenciosa",
+"Que palavra te define melhor?|Sabor|Estilo|Liderança|Cuidado",
+"O que te dá mais orgulho?|Receita de família|Autoestima de alguém|Equipe unida|Alguém recuperado",
+"Qual forma de arte você prefere?|Culinária|Maquiagem|Arquitetura de ideias|Música que acalma",
+"Que gesto você faz sem pensar?|Provar a comida|Ajeitar o cabelo|Anotar compromissos|Perguntar se está tudo bem",
+"Como seria a manhã ideal?|Café da manhã farto|Banho e skincare|Agenda do dia pronta|Caminhada tranquila",
+"Que tipo de luz você prefere?|Calda dourada|Gloss e glitter|Tela de computador|Abajur calmante",
+"O que levaria para uma ilha deserta?|Faca de chef|Espelho e pente|Caderno de planos|Kit de primeiros socorros",
+"Qual bagunça mais te incomoda?|Cozinha suja|Cabelo desarrumado|Papéis soltos|Alguém sofrendo calado",
+"Como gosta de ser lembrado(a)?|Pelo sabor|Pelo carisma|Pela liderança|Pelo acolhimento",
+"Que programa de TV você assistiria?|Reality de culinária|Antes e depois|Negócios e startups|Documentário de saúde",
+"Que parte de um projeto você mais ama?|Testar receitas|Dar o acabamento|Definir o plano|Cuidar das pessoas",
+"Seu dia perfeito termina com...|Jantar especial|Autocuidado|Metas cumpridas|Sono tranquilo",
+"Qual aroma te acalma?|Canela|Baunilha e flores|Café passado|Eucalipto",
+"Como prefere se expressar?|Pelo prato|Pelo visual|Pelos números|Pelo carinho",
+"Qual conquista mais te emociona?|Mesa cheia|Espelho sorrindo|Empresa crescendo|Abraço de gratidão",
+"O que faz seus olhos brilharem?|Chamas na panela|Cores e pincéis|Gráficos subindo|Mãos que curam",
+"Que animal combina com você?|Abelha que faz mel|Pavão elegante|Formiga organizada|Golfinho amigo",
+"Que época combina com você?|Outono de sopas|Verão de brilho|Janeiro de metas|Primavera que renova",
+"Qual revista você leria?|Receitas|Moda e beleza|Economia|Saúde e vida",
+"Quando alguém chora, você...|Faz um prato quentinho|Levanta o astral|Resolve o problema|Abraça e escuta",
+"Qual tecnologia você mais usaria?|Timer de cozinha|Espelho de LED|Planilhas|Aplicativo de saúde",
+"Que som te irrita mais?|Comida queimando|Secador quebrado|Alarme de prazo|Alguém reclamando de dor",
+"Qual lembrança é a mais viva?|Almoço da família|Penteado da formatura|Primeiro emprego|Cuidar de um parente",
+"Numa equipe, você é...|Chef da cozinha|Diretor(a) de arte|Coordenador(a)|Apoio de todos",
+"Qual caminho faz no shopping?|Praça de alimentação|Loja de cosméticos|Banco e serviços|Farmácia",
+"Que elogio você prefere ouvir?|Saboroso|Deslumbrante|Eficiente|Cuidadoso",
+"Que paisagem você ama?|Feira ao amanhecer|Pôr do sol dourado|Cidade em movimento|Floresta calma",
+"Qual aula seria a mais divertida?|Oficina de pratos|Oficina de maquiagem|Oficina de liderança|Oficina de primeiros socorros",
+"Qual desafio você toparia?|Jantar para 50 pessoas|Noiva pronta em 1 hora|Fechar o caixa sem erro|Atender uma urgência",
+"Qual cheiro de lugar você prefere?|Padaria|Salão de beleza|Escritório com café|Jardim depois da chuva",
+"Qual ferramenta é a sua?|Colher de pau|Pente e pincel|Calculadora|Estetoscópio",
+"O que mais te faz sorrir?|Prato vazio|Cliente encantado(a)|Meta atingida|Alguém melhorando",
+"Que som ao fundo combina com o trabalho?|Fogão e talheres|Música animada|Telefone e teclas|Silêncio e calma",
+"Qual é a sua maior virtude?|Criatividade no sabor|Sensibilidade estética|Organização|Empatia",
+"Que festa você organizaria?|Banquete|Desfile de moda|Convenção|Campanha de saúde",
+"Que roupa de trabalho combina com você?|Avental colorido|Preto elegante|Blazer azul|Jaleco claro",
+"Qual aplicativo você mais usaria?|Receitas|Edição de fotos|Agenda|Saúde e bem-estar",
+"Qual detalhe você nota primeiro?|Tempero do prato|Cabelo e unhas|Prazos e números|Cansaço no rosto",
+"Qual presente você gostaria de receber?|Jantar especial|Dia de spa|Curso de liderança|Retiro de bem-estar",
+"Qual ritmo de trabalho você prefere?|Intenso e criativo|Variado e social|Metódico e estratégico|Constante e humano",
+"O que você mais valoriza?|Sabor|Beleza|Ordem|Saúde",
+"Que livro você abriria agora?|Livro de receitas|Guia de estilo|Manual de gestão|Guia de bem-estar",
+"Num dia de chuva, você...|Faz um bolo|Faz hidratação no cabelo|Organiza os papéis|Faz chá para alguém",
+"Qual cena mais te emociona?|Família à mesa|Antes e depois|Empresa nascendo|Bebê nascendo",
+"Qual desafio criativo você escolheria?|Inventar um prato|Inventar um visual|Inventar um sistema|Inventar um jeito de acalmar",
+"Numa emergência, você...|Alimenta a equipe|Levanta o ânimo|Coordena todo mundo|Presta os primeiros socorros",
+"Que clima de ambiente você prefere?|Quente e aromático|Elegante e perfumado|Limpo e organizado|Sereno e acolhedor",
+"O que você prefere decorar?|Mesa de jantar|O próprio visual|Quadro de metas|Quarto de repouso",
+"Como você agradece?|Convidando para comer|Elogiando o visual|Ajudando a planejar|Cuidando de volta",
+"Qual som da natureza você prefere?|Crepitar da lenha|Ondas e brisa|Cidade acordando|Chuva suave",
+"Qual atitude te define?|Colocar a mão na massa|Capricho nos detalhes|Planejar antes|Perguntar como a pessoa está",
+"Qual barraca de feira te atrai?|Temperos|Acessórios|Serviços|Ervas medicinais",
+"O que você sente diante do caos?|Quero cozinhar|Quero embelezar|Quero organizar|Quero acalmar",
+"Qual é a sua companhia de trabalho ideal?|Panelas|Espelhos|Planilhas|Pessoas",
+"Qual cena de sucesso você imagina?|Restaurante cheio|Salão lotado|Empresa lucrando|Comunidade saudável",
+"Qual destas ideias você evita?|Comida insossa|Visual sem graça|Rotina bagunçada|Pessoas sem atenção",
+"Que mãos você tem?|Mãos de cozinheiro|Mãos de artista|Mãos que decidem|Mãos que curam",
+"Qual tarde você prefere?|Oficina de pães|Dia de beleza|Reunião produtiva|Visita a quem precisa",
+"O que te faz perder a noção da hora?|Cozinhar|Pintar e pentear|Planejar|Ajudar alguém",
+"Qual lema é o seu?|Comer bem é viver bem|Beleza é confiança|Organização é liberdade|Cuidar é amar",
+"Que futuro você imagina?|Meu próprio restaurante|Meu próprio salão|Minha própria empresa|Cuidando da minha comunidade"
+];
+const perguntas = RAW.map(s => { const p = s.split("|"); return { texto: p[0], op: { G: p[1], B: p[2], A: p[3], S: p[4] }, ok: p.length === 5 }; });
+
+/* ---------- Validação automática (console + painel ADM) ---------- */
+function validarBanco() {
+  const unicas = new Set(perguntas.map(p => p.texto)).size === perguntas.length;
+  const ok = perguntas.length === 80 && unicas && perguntas.every(p => p.ok && ORDEM.every(k => p.op[k]));
+  return { ok, total: perguntas.length, unicas };
+}
+console.assert(perguntas.length === 80, "O banco deveria ter exatamente 80 perguntas, tem " + perguntas.length);
+
+/* ---------- Utilidades ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+function embaralhar(arr) { // Fisher-Yates
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+function sortear8() { return embaralhar(perguntas.map((_, i) => i)).slice(0, 8).map(i => perguntas[i]); }
+function mostrar(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.toggle("active", s.id === id));
+  window.scrollTo(0, 0);
+}
+
+/* ---------- Armazenamento local (com proteção se o navegador bloquear) ---------- */
+let memoria = { log: [] };
+function ler() {
+  try { const d = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY)); if (d && Array.isArray(d.log)) return d; } catch (e) {}
+  return memoria;
+}
+function gravar(d) { memoria = d; try { localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(d)); } catch (e) {} }
+
+/* ---------- Estado do quiz ---------- */
+const estado = { perg: [], i: 0, resp: [], trava: false, salvo: false };
+
+function iniciar() {
+  const v = validarBanco();
+  if (!v.ok) console.error("Banco de perguntas inválido:", v);
+  estado.perg = sortear8(); estado.i = 0; estado.resp = []; estado.trava = false; estado.salvo = false;
+  mostrar("quiz"); renderPergunta();
+}
+
+function renderPergunta() {
+  const q = estado.perg[estado.i];
+  $("pTexto").textContent = q.texto;
+  $("progTxt").textContent = "Pergunta " + (estado.i + 1) + " de 8";
+  $("barra").style.width = (estado.i / 8 * 100) + "%";
+  $("opcoes").innerHTML = embaralhar(ORDEM).map(k =>
+    '<button class="op" data-k="' + k + '"><span class="ico" style="background:' + AREAS[k].cor + '">' + ICONES[k] + '</span><span>' + esc(q.op[k]) + '</span></button>'
+  ).join("");
+  const c = $("cartaoPergunta"); c.classList.remove("troca"); void c.offsetWidth; c.classList.add("troca");
+}
+
+$("opcoes").addEventListener("click", e => {
+  const b = e.target.closest(".op"); if (!b || estado.trava) return;
+  estado.trava = true; b.classList.add("sel");
+  const k = b.dataset.k, q = estado.perg[estado.i];
+  estado.resp.push({ k, texto: q.op[k], pos: estado.i });
+  setTimeout(() => {
+    estado.i++; estado.trava = false;
+    if (estado.i < 8) renderPergunta(); else { $("barra").style.width = "100%"; finalizar(); }
+  }, 320);
+});
+
+/* ---------- Cálculo ponderado: respostas mais para o fim pesam um pouco mais (desempate) ---------- */
+function calcular(resp) {
+  const cont = { G: 0, B: 0, A: 0, S: 0 }, pont = { G: 0, B: 0, A: 0, S: 0 };
+  resp.forEach(r => { cont[r.k]++; pont[r.k] += 1 + r.pos * 0.02; });
+  const rank = ORDEM.slice().sort((a, b) => pont[b] - pont[a]);
+  const prim = rank[0];
+  const sec = pont[rank[1]] > 0 ? rank[1] : prim;
+  const n = cont[prim];
+  const modalidade = n >= 6 ? "Pós-Graduação" : n === 5 ? "Graduação" : n === 4 ? "Técnico" : "Curso Livre";
+  return { prim, sec, n, modalidade, cont };
+}
+
+function finalizar() {
+  const r = calcular(estado.resp);
+  const presencial = AREAS[r.prim].nome;
+  const ead = r.modalidade + " em " + AREAS[r.sec].ead;
+  if (!estado.salvo) { estado.salvo = true; registrar(presencial, ead); } // 1 conclusão = 1 registro
+  renderResultado(r, presencial, ead);
+}
+
+function renderResultado(r, presencial, ead) {
+  const A = AREAS[r.prim];
+  const citadas = estado.resp.filter(x => x.k === r.prim).slice(0, 3).map(x => "<em>" + esc(x.texto) + "</em>").join(", ");
+  const outra = r.sec !== r.prim ? " Sua segunda afinidade é <em>" + AREAS[r.sec].nome + "</em>, por isso o EAD sugerido olha para essa área e amplia o seu caminho." : "";
+  $("result").innerHTML =
+    '<div class="res-topo"><div class="ico-g" style="background:' + A.cor + '">' + ICONES[r.prim] + '</div><p>O seu perfil combina com</p><h2>' + esc(presencial) + '</h2></div>' +
+    '<div class="cartao rec"><small>Curso presencial · Senac Tefé</small><h3>' + esc(presencial) + '</h3><p>Trilhas para começar:</p><ul>' + A.trilhas.map(t => "<li>" + esc(t) + "</li>").join("") + '</ul>' +
+    '<p class="mini">Confirme turmas e datas disponíveis no Senac Tefé: Rua Bom Jesus, 1037, Jerusalém, ou WhatsApp (92) 98197-5354.</p></div>' +
+    '<div class="cartao rec ead"><small>Senac EAD · Polo Senac Tefé</small><h3>' + esc(ead) + '</h3><p>Estude no seu ritmo, sem sair de casa. Veja os cursos do polo em <a href="https://www.ead.senac.br" target="_blank" rel="noopener">ead.senac.br</a>.</p>' +
+    '<p class="mini">A modalidade (Livre, Técnico, Graduação ou Pós) depende da sua escolaridade e da oferta vigente. Confirme no portal.</p></div>' +
+    '<div class="cartao porque"><h2>Por que combina com você</h2><p>' + esc(A.texto) + '</p><p style="margin-top:8px">Você escolheu: ' + citadas + '.' + outra + '</p></div>' +
+    '<div class="res-acoes"><button id="btnNovo" class="btn grande">Novo participante</button></div>';
+  mostrar("result");
+}
+$("result").addEventListener("click", e => { if (e.target.id === "btnNovo") { mostrar("home"); } });
+$("btnIniciar").addEventListener("click", iniciar);
+
+/* ---------- Registro + sincronização opcional ---------- */
+function syncAtivo() {
+  const s = CONFIG.SYNC;
+  return (s.provider === "firebase" && s.firebaseUrl) || (s.provider === "supabase" && s.supabaseUrl && s.supabaseKey);
+}
+async function enviar(rec) {
+  const s = CONFIG.SYNC, corpo = JSON.stringify({ p: rec.p, e: rec.e, ts: rec.ts });
+  try {
+    let r;
+    if (s.provider === "firebase") r = await fetch(s.firebaseUrl.replace(/\/$/, "") + "/respostas.json", { method: "POST", body: corpo });
+    else r = await fetch(s.supabaseUrl.replace(/\/$/, "") + "/rest/v1/" + s.supabaseTable, { method: "POST",
+      headers: { apikey: s.supabaseKey, Authorization: "Bearer " + s.supabaseKey, "Content-Type": "application/json", Prefer: "return=minimal" }, body: corpo });
+    return r.ok;
+  } catch (e) { return false; }
+}
+async function buscarCentral() {
+  const s = CONFIG.SYNC;
+  if (s.provider === "firebase") {
+    const d = await (await fetch(s.firebaseUrl.replace(/\/$/, "") + "/respostas.json")).json();
+    return d ? Object.values(d) : [];
+  }
+  const r = await fetch(s.supabaseUrl.replace(/\/$/, "") + "/rest/v1/" + s.supabaseTable + "?select=p,e,ts", { headers: { apikey: s.supabaseKey, Authorization: "Bearer " + s.supabaseKey } });
+  if (!r.ok) throw new Error("erro");
+  return r.json();
+}
+function registrar(p, e) {
+  const d = ler(), rec = { p, e, ts: Date.now(), s: syncAtivo() ? false : null };
+  d.log.push(rec); gravar(d);
+  if (syncAtivo()) enviar(rec).then(ok => { if (ok) { rec.s = true; gravar(d); } });
+}
+
+/* ---------- Painel ADM ---------- */
+let visao = "local", central = [];
+function agregar(lista) {
+  const pres = {}, ead = {};
+  lista.forEach(r => { pres[r.p] = (pres[r.p] || 0) + 1; ead[r.e] = (ead[r.e] || 0) + 1; });
+  return { total: lista.length, pres, ead };
+}
+const ordenar = o => Object.entries(o).sort((a, b) => b[1] - a[1]);
+function barras(lista, rotulo) {
+  if (!lista.length) return '<p class="vazio">Nenhuma recomendação ainda.</p>';
+  const max = lista[0][1];
+  return lista.map((x, i) => '<div class="linha"><div class="nome"><span>' + (i + 1) + '. ' + esc(rotulo ? rotulo(x[0]) : x[0]) + '</span><b>' + x[1] + '</b></div><div class="fundo"><i style="width:' + (x[1] / max * 100) + '%"></i></div></div>').join("");
+}
+function renderAdm() {
+  const lista = visao === "central" ? central : ler().log, a = agregar(lista), v = validarBanco();
+  const geral = ordenar(a.pres).map(x => ["Presencial · " + x[0], x[1]]).concat(ordenar(a.ead).map(x => ["EAD · " + x[0], x[1]])).sort((x, y) => y[1] - x[1]);
+  $("admTotal").textContent = a.total;
+  $("admFonte").textContent = visao === "central" ? "Fonte: banco central (todos os celulares)." : "Fonte: somente este aparelho/navegador.";
+  $("admPres").innerHTML = barras(ordenar(a.pres));
+  $("admEad").innerHTML = barras(ordenar(a.ead));
+  $("admGeral").innerHTML = barras(geral);
+  const ck = $("admCheck"); ck.className = "check" + (v.ok ? "" : " ruim");
+  ck.textContent = (v.ok ? "Banco válido: " : "ERRO no banco: ") + v.total + " perguntas, " + (v.unicas ? "sem repetição" : "há repetidas") + ", 8 sorteadas por participante.";
+  const sync = syncAtivo(), pend = ler().log.filter(r => r.s === false).length;
+  $("admCentral").hidden = !sync || visao === "central";
+  $("admLocal").hidden = visao === "local";
+  $("admReenviar").hidden = !(sync && pend);
+  $("admReenviar").textContent = "Reenviar pendentes (" + pend + ")";
+}
+function resumo() {
+  const lista = visao === "central" ? central : ler().log, a = agregar(lista);
+  const l = o => ordenar(o).map(x => "  - " + x[0] + ": " + x[1]).join("\n") || "  (nenhum)";
+  return "Quiz Senac Tefé · " + new Date().toLocaleString("pt-BR") + "\n" + (visao === "central" ? "Fonte: banco central" : "Fonte: este aparelho") +
+    "\nTotal de participantes: " + a.total + "\n\nCursos presenciais recomendados:\n" + l(a.pres) + "\n\nCursos EAD recomendados:\n" + l(a.ead);
+}
+function abrirAdm() { $("adm").hidden = false; $("admLogin").hidden = false; $("admPainel").hidden = true; $("admSenha").value = ""; $("admErro").hidden = true; $("admSenha").focus(); }
+function entrarAdm() {
+  if ($("admSenha").value !== CONFIG.ADM_SENHA) { $("admErro").hidden = false; return; }
+  $("admLogin").hidden = true; $("admPainel").hidden = false; visao = "local"; renderAdm();
+}
+$("btnAdm").addEventListener("click", abrirAdm);
+$("admFechar").addEventListener("click", () => { $("adm").hidden = true; });
+$("admEntrar").addEventListener("click", entrarAdm);
+$("admSenha").addEventListener("keydown", e => { if (e.key === "Enter") entrarAdm(); });
+$("admLocal").addEventListener("click", () => { visao = "local"; renderAdm(); });
+$("admCentral").addEventListener("click", async () => {
+  try { central = await buscarCentral(); visao = "central"; renderAdm(); }
+  catch (e) { alert("Não foi possível carregar os dados centrais. Verifique a configuração SYNC e a internet."); }
+});
+$("admReenviar").addEventListener("click", async () => {
+  const d = ler();
+  for (const r of d.log.filter(x => x.s === false)) { if (await enviar(r)) r.s = true; }
+  gravar(d); renderAdm();
+});
+$("admCopiar").addEventListener("click", async () => {
+  const t = resumo();
+  try { await navigator.clipboard.writeText(t); alert("Resumo copiado."); }
+  catch (e) { prompt("Copie o resumo abaixo:", t); }
+});
+$("admReset").addEventListener("click", () => {
+  if (!confirm("Apagar TODOS os dados deste aparelho? Isso não pode ser desfeito.")) return;
+  if (!confirm("Confirmação final: apagar mesmo? (Dados já enviados ao banco central não são apagados.)")) return;
+  gravar({ log: [] }); visao = "local"; renderAdm();
+});
+
+</script>
+</body>
+</html>
